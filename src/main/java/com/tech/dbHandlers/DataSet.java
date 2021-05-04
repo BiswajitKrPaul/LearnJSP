@@ -13,6 +13,10 @@ public class DataSet extends ArrayList implements Serializable {
     private ResultSet rs = null;
     private ResultSetMetaData resultSetMetaData = null;
 
+    public DataSet() {
+
+    }
+
 
     public DataSet(ResultSet resultSet) throws SQLException {
         this.rs = resultSet;
@@ -20,9 +24,9 @@ public class DataSet extends ArrayList implements Serializable {
     }
 
 
-    public ArrayList getDataSetFromResultSet() throws SQLException {
+    public DataSet getDataSetFromResultSet() throws SQLException {
         HashMap hashMapTemp = new HashMap();
-        ArrayList dataSet = new ArrayList<Object>();
+        DataSet dataSet = new DataSet();
         String[] columnArr = getColumnValues().split(";");
         int[] columnType = getColumnTypes();
         while (rs.next()) {
@@ -51,7 +55,7 @@ public class DataSet extends ArrayList implements Serializable {
     private int[] getColumnTypes() throws SQLException {
         int[] columnsTypes = new int[resultSetMetaData.getColumnCount()];
         for (int i = 0; i < resultSetMetaData.getColumnCount(); i++) {
-            columnsTypes[i] = resultSetMetaData.getColumnType(i+1);
+            columnsTypes[i] = resultSetMetaData.getColumnType(i + 1);
         }
         return columnsTypes;
     }

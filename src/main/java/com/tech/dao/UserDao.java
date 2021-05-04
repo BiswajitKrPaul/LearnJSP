@@ -17,7 +17,7 @@ public class UserDao {
             QueryProcessor queryProcessor = new QueryProcessor();
             String sqlquery = "select * from user";
             ResultSet dsPrimary = queryProcessor.getQueryResult(sqlquery);
-            DataSet ds = (DataSet) new DataSet(dsPrimary).getDataSetFromResultSet();
+            DataSet ds = new DataSet(dsPrimary).getDataSetFromResultSet();
             while (dsPrimary.next()) {
                 user = new User();
                 user.setUserid(dsPrimary.getInt("userid"));
