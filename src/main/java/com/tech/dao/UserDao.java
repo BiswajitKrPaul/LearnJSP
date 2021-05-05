@@ -16,13 +16,13 @@ public class UserDao {
 
             QueryProcessor queryProcessor = new QueryProcessor();
             String sqlquery = "select * from user";
-            ResultSet dsPrimary = queryProcessor.getQueryResult(sqlquery);
-            DataSet ds = new DataSet(dsPrimary).getDataSetFromResultSet();
-            while (dsPrimary.next()) {
+            DataSet ds = queryProcessor.getQueryResult(sqlquery);
+            String check = ds.getColumnValues("username", "#");
+            for (int i = 0; i < ds.size(); i++) {
                 user = new User();
-                user.setUserid(dsPrimary.getInt("userid"));
-                user.setUsername(dsPrimary.getString("username"));
-                user.setPassword(dsPrimary.getString("userid"));
+                user.setUserid(Integer.parseInt(ds.getValue(i, "userid")));
+                user.setUsername(ds.getValue(i, "username"));
+                user.setPassword(ds.getValue(i, "userid"));
                 allUsers.add(user);
             }
             queryProcessor.closeConnection();

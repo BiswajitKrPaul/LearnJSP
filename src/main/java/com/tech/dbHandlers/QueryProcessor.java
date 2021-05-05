@@ -21,11 +21,12 @@ public class QueryProcessor {
         }
     }
 
-    public ResultSet getQueryResult(String sqlQuery) throws SQLException {
+    public DataSet getQueryResult(String sqlQuery) throws SQLException {
         ResultSet dsPrimary = null;
         Statement statement = connection.createStatement();
         dsPrimary = statement.executeQuery(sqlQuery);
-        return dsPrimary;
+
+        return new DataSet(dsPrimary).getDataSetFromResultSet();
     }
 
     public void closeConnection() throws SQLException {

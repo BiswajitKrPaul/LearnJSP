@@ -10,8 +10,9 @@ import java.util.HashMap;
 
 public class DataSet extends ArrayList implements Serializable {
 
-    private ResultSet rs = null;
-    private ResultSetMetaData resultSetMetaData = null;
+    private static ResultSet rs = null;
+    private static ResultSetMetaData resultSetMetaData = null;
+    private static DataSet ds;
 
     public DataSet() {
 
@@ -19,18 +20,19 @@ public class DataSet extends ArrayList implements Serializable {
 
 
     public DataSet(ResultSet resultSet) throws SQLException {
-        this.rs = resultSet;
-        this.resultSetMetaData = rs.getMetaData();
+        rs = resultSet;
+        resultSetMetaData = rs.getMetaData();
+        ds = new DataSet();
     }
 
 
     public DataSet getDataSetFromResultSet() throws SQLException {
         HashMap hashMapTemp = new HashMap();
         DataSet dataSet = new DataSet();
-        String[] columnArr = getColumnValues().split(";");
+        String[] columnArr = getColumnLabelValues().split(";");
         int[] columnType = getColumnTypes();
         while (rs.next()) {
-            hashMapTemp.clear();
+            hashMapTemp = new HashMap();
             for (int i = 0; i < columnArr.length; i++) {
                 switch (columnType[i]) {
                     case Types.VARCHAR:
@@ -49,6 +51,7 @@ public class DataSet extends ArrayList implements Serializable {
             }
             dataSet.add(hashMapTemp);
         }
+        ds = dataSet;
         return dataSet;
     }
 
@@ -60,7 +63,7 @@ public class DataSet extends ArrayList implements Serializable {
         return columnsTypes;
     }
 
-    private String getColumnValues() throws SQLException {
+    private String getColumnLabelValues() throws SQLException {
         StringBuilder columns = new StringBuilder();
         columns.append(";");
         for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
@@ -69,4 +72,26 @@ public class DataSet extends ArrayList implements Serializable {
         }
         return columns.substring(1);
     }
+
+    public String getValue(int position, String columnName) throws SQLException {
+        StringBuilder columnValue = new StringBuilder();
+        HashMap hmTemp = (HashMap) ds.get(position);
+        columnValue.append(hmTemp.get(columnName).toString());
+        return columnValue.toString();
+    }
+
+    public String getColumnValues(String columnName, String delimeter) {
+        if (delimeter.isEmpty()) {
+            delimeter = ";";
+        }
+        StringBuilder columnValue = new StringBuilder();
+        HashMap hmTemp;
+        for (int i = 0; i < ds.size(); i++) {
+            hmTemp = (HashMap) ds.get(i);
+            columnValue.append(hmTemp.get(columnName).toString());
+            columnValue.append(delimeter);
+        }
+        return columnValue.substring(0, columnValue.length() - 1);
+    }
+
 }
